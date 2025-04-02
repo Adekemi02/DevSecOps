@@ -25,7 +25,7 @@ pipeline{
                     '''
                     // Display the content of the report in a separte step
                     echo "Displaying Gitleaks report: "
-                    sh "cat gitleaks-report.json" || echo "No report found"
+                    sh 'cat gitleaks-report.json || echo "Report not found"'
                 }
             }
             // Archive the report as an artifact
