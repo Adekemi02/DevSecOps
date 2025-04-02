@@ -39,7 +39,7 @@ pipeline{
         }
         stage('SCA with OWASP Dependency Check'){
             steps {
-                script{
+                script {
                     sh 'rm dependency-check-report*  || true'
                     sh 'wget "https://raw.githubusercontent.com/aatikah/devsecops/refs/heads/master/owasp-dependency-check.sh"'
                     sh 'bash owasp-dependency-check.sh || true'
@@ -47,27 +47,11 @@ pipeline{
                     echo "Displaying OWASP Dependency Check report: "
                     sh 'cat dependency-check-report.html || echo "Report not found"'
                 }
-            }
-            // Archive the report as an artifact
-            post {
-                always {
-                    archiveArtifacts artifacts: 'dependency-check-report.json, dependency-check-report.html, dependency-check-report.xml', 
-                    fingerprint: true,
-                    allowEmptyArchive: true
-                }
-                // Publish HTML Report
-                always {
-                    publishHTML(target: [
-                        allowMissing: false,
-                        alwaysLinkToLastBuild: false,
-                        keepAll: true,
-                        reportDir: '.',
-                        reportFiles: 'dependency-check-report.html',
-                        reportName: 'OWASP Dependency Checker Report'
-                    ])
-                }
                 // Parse JSON report to check for issues
-                always {
+                // This step is added to ensure that the JSON report is parsed and the results are displayed
+                // after the Dependency Check scan is completed
+                // This is important to ensure that the JSON report is available for parsing
+                script {
                     if (fileExists('dependency-check-report.json')) {
                         def jsonReport = readJSON file: 'dependency-check-report.json'
                         def vulnerabilities = jsonReport.dependencies.collect { it.vulnerabilities ?: [] }.flatten()
@@ -76,6 +60,24 @@ pipeline{
                     } else {
                         echo "Dependency-Check JSON report not found. The scan may have failed."
                     }
+                }
+            }
+            // Archive the report as an artifact
+            post {
+                always {
+                    archiveArtifacts artifacts: 'dependency-check-report.json, dependency-check-report.html, dependency-check-report.xml', 
+                    fingerprint: true,
+                    allowEmptyArchive: true
+                    
+                    // Publish HTML Report
+                    publishHTML(target: [
+                        allowMissing: false,
+                        alwaysLinkToLastBuild: false,
+                        keepAll: true,
+                        reportDir: '.',
+                        reportFiles: 'dependency-check-report.html',
+                        reportName: 'OWASP Dependency Checker Report'
+                    ])
                 }
             }
         }
