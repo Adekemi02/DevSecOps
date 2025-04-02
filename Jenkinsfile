@@ -3,9 +3,9 @@ pipeline{
     agent {
         label 'jenkins-slave'
     }
-    environment {
-        
-    }
+    // environment {
+
+    // }
   
     stages{
         
