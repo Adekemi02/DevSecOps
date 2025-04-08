@@ -101,7 +101,7 @@ pipeline{
                     def jsonReport = readJSON file: 'bandit-report.json'
                     def issueCount = jsonReport.results.size()
                     if (issueCount > 0) {
-                        echo 'Bandit found ${issueCount} potential security issue(s). Please review the report'
+                        echo "Bandit found ${issueCount} potential security issue(s). Please review the report"
                     } else {
                         echo 'Bandit scan completely with no found issue.'
                     }
