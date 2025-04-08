@@ -21,6 +21,7 @@ pipeline{
                 script{
                     // Pull and run the Gitleaks Docker Image with a custom config file
                     sh '''
+                        rm gitleaks-report.json  || true
                         docker run --rm -v $(pwd):/path -v $(pwd)/.gitleaks.toml:/.gitleaks.toml zricethezav/gitleaks:latest detect --source /path --config /.gitleaks.toml --report-format json --report-path /path/gitleaks-report.json || true
                     '''
                     // Display the content of the report in a separte step
@@ -41,7 +42,7 @@ pipeline{
             steps {
                 script {
                     sh """
-                    rm dependency-check-report*  || true
+                    rm dependency-check-report.*  || true
                     chmod +x run-depcheck.sh
                     # Run the OWASP Dependency Check script
                     ./run-depcheck.sh || true

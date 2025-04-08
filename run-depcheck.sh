@@ -30,7 +30,8 @@ docker run --rm \
     --volume $(pwd):/src \
     --volume "$DATA_DIRECTORY":/usr/share/dependency-check/data \
     --volume $REPORT_DIRECTORY:/reports \
-    hysnsec/dependency-check \
+    owasp/dependency-check:$DC_VERSION \
+    --updateonly \
     --scan /src \
     --format "JSON" \
     --project "$DC_PROJECT" \
