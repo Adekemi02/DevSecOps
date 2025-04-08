@@ -41,14 +41,11 @@ pipeline{
         stage('SCA with OWASP Dependency Check'){
             steps {
                 script {
-                    sh """
-                    rm dependency-check-report.*  || true
-                    chmod +x run-depcheck.sh
-                    # Run the OWASP Dependency Check script
-                    ./run-depcheck.sh || true
-                    """
-                    // sh 'wget "https://raw.githubusercontent.com/aatikah/devsecops/refs/heads/master/owasp-dependency-check.sh"'
-                    // sh bash owasp-dependency-check.sh || true
+                    sh 'rm dependency-check-report*  || true'
+                    sh 'wget "https://raw.githubusercontent.com/aatikah/devsecops/refs/heads/master/owasp-dependency-check.sh"'
+                    sh 'chmod +x run-depcheck.sh'
+                    sh 'bash run-depcheck.sh || true'
+                    
                     
                     // // Display the content of the report in a separte step
                     // echo "Displaying OWASP Dependency Check report: "
