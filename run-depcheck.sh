@@ -27,6 +27,8 @@ fi
     # -u $(id -u ${USER}):$(id -g ${USER}) \
     # owasp/dependency-check:$DC_VERSION \
 docker run --rm \
+    -e user=$USER \
+    -u $(id -u ${USER}):$(id -g ${USER}) \
     --volume $(pwd):/src \
     --volume "$DATA_DIRECTORY":/usr/share/dependency-check/data \
     --volume $REPORT_DIRECTORY:/reports \
