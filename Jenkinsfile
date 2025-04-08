@@ -73,7 +73,7 @@ pipeline{
                     fingerprint: true,
                     allowEmptyArchive: true
 
-                    Publish HTML Report
+                    // Publish HTML Report
                     publishHTML(target: [
                         allowMissing: false,
                         alwaysLinkToLastBuild: false,
