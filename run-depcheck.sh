@@ -6,6 +6,7 @@ DC_PROJECT="django.nV"
 REPORT_DIRECTORY="$PWD/reports"
 DATA_DIRECTORY="$PWD/data"
 CACHE_DIRECTORY="$PWD/data/cache"
+NVD_API_KEY="<NVD_API_KEY>"
 
 if [ ! -d "$DATA_DIRECTORY" ]; then
     echo "Initially creating persistent directory: $DATA_DIRECTORY"
@@ -35,7 +36,7 @@ docker run --rm \
     --scan /src \
     --format "JSON" \
     --project "$DC_PROJECT" \
-    --out /reports/ 
-    
+    --out /reports/ \
+    --nvdApiKey "$NVD_API_KEY"
     # Use suppression like this: (where /src == $pwd)
     # --suppression "/src/security/dependency-check-suppression.xml"
