@@ -2,7 +2,7 @@
 
 DC_VERSION="latest"
 DC_DIRECTORY=$PWD/OWASP-Dependency-Check
-DC_PROJECT="dependency-check scan: $(pwd)"
+DC_PROJECT="django.nV"
 REPORT_DIRECYORY= "$PWD/reports"
 DATA_DIRECTORY="$DC_DIRECTORY/data"
 CACHE_DIRECTORY="$DC_DIRECTORY/data/cache"
@@ -34,7 +34,7 @@ docker run --rm \
     hysec/dependency-check:$DC_VERSION \
     # owasp/dependency-check:$DC_VERSION \
     --scan /src \
-    --format "ALL" \
+    --format "JSON" \
     --project "$DC_PROJECT" \
     --out /reports \
     --nvdApiKey "$NVD_API_KEY"
