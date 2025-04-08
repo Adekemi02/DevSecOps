@@ -69,7 +69,7 @@ pipeline{
             // Archive the report as an artifact
             post {
                 always {
-                    archiveArtifacts artifacts: '/reports/dependency-check-report.*', 
+                    archiveArtifacts artifacts: 'dependency-check-report.json, dependency-check-report.html, dependency-check-report.xml', 
                     fingerprint: true,
                     allowEmptyArchive: true
 
@@ -79,7 +79,7 @@ pipeline{
                         alwaysLinkToLastBuild: false,
                         keepAll: true,
                         reportDir: '.',
-                        reportFiles: '/reports/dependency-check-report.html',
+                        reportFiles: 'dependency-check-report.html',
                         reportName: 'OWASP Dependency Checker Report'
                     ])
                 }
