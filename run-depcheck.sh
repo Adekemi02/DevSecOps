@@ -3,7 +3,7 @@
 DC_VERSION="latest"
 # DC_DIRECTORY=$PWD/OWASP-Dependency-Check
 DC_PROJECT="django.nV"
-REPORT_DIRECYORY= "$PWD/reports"
+REPORT_DIRECTORY="$PWD/reports"
 DATA_DIRECTORY="$PWD/data"
 CACHE_DIRECTORY="$PWD/data/cache"
 NVD_API_KEY="<NVD_API_KEY>"
@@ -25,13 +25,12 @@ fi
 
 # -e user=$USER \
     # -u $(id -u ${USER}):$(id -g ${USER}) \
-    
+    # owasp/dependency-check:$DC_VERSION \
 docker run --rm \
     --volume $(pwd):/src \
     --volume "$DATA_DIRECTORY":/usr/share/dependency-check/data \
     --volume $REPORT_DIRECTORY:/reports \
     hysec/dependency-check \
-    # owasp/dependency-check:$DC_VERSION \
     --scan /src \
     --format "JSON" \
     --project "$DC_PROJECT" \
