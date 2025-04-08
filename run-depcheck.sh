@@ -34,7 +34,7 @@ docker run --rm \
     --scan /src \
     --format "JSON" \
     --project "$DC_PROJECT" \
-    --out /reports/dependency-check-result.json \
+    --out /reports/ 
     
     # Use suppression like this: (where /src == $pwd)
     # --suppression "/src/security/dependency-check-suppression.xml"

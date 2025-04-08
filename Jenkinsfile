@@ -71,7 +71,7 @@ pipeline{
             // Archive the report as an artifact
             post {
                 always {
-                    archiveArtifacts artifacts: 'reports/dependency-check-report.json', 
+                    archiveArtifacts artifacts: 'reports/dependency-check-report.*', 
                     fingerprint: true,
                     allowEmptyArchive: true
 
