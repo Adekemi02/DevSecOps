@@ -31,7 +31,7 @@ docker run --rm \
     --volume $(pwd):/src \
     --volume "$DATA_DIRECTORY":/usr/share/dependency-check/data \
     --volume $REPORT_DIRECTORY:/reports \
-    hysec/dependency-check \
+    hysnsec/dependency-check \
     --scan /src \
     --format "JSON" \
     --project "$DC_PROJECT" \
