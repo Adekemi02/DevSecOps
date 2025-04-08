@@ -69,19 +69,19 @@ pipeline{
             // Archive the report as an artifact
             post {
                 always {
-                    archiveArtifacts artifacts: 'reports/dependency-check-report.*', 
+                    archiveArtifacts artifacts: '/reports/dependency-check-report.*', 
                     fingerprint: true,
                     allowEmptyArchive: true
 
-                    // Publish HTML Report
-                    // publishHTML(target: [
-                    //     allowMissing: false,
-                    //     alwaysLinkToLastBuild: false,
-                    //     keepAll: true,
-                    //     reportDir: '.',
-                    //     reportFiles: 'reports/dependency-check-report.html',
-                    //     reportName: 'OWASP Dependency Checker Report'
-                    // ])
+                    Publish HTML Report
+                    publishHTML(target: [
+                        allowMissing: false,
+                        alwaysLinkToLastBuild: false,
+                        keepAll: true,
+                        reportDir: '.',
+                        reportFiles: '/reports/dependency-check-report.html',
+                        reportName: 'OWASP Dependency Checker Report'
+                    ])
                 }
             }
         }
