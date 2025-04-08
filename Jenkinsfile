@@ -46,25 +46,21 @@ pipeline{
                     sh 'chmod +x run-depcheck.sh'
                     sh 'bash run-depcheck.sh || true'
                     
-                    
-                    // // Display the content of the report in a separte step
-                    // echo "Displaying OWASP Dependency Check report: "
-                    // sh 'cat reports/dependency-check-report.json || echo "Report not found"'
                 }
                 // Parse JSON report to check for issues
                 // This step is added to ensure that the JSON report is parsed and the results are displayed
                 // after the Dependency Check scan is completed
                 // This is important to ensure that the JSON report is available for parsing
-                // script {
-                //     if (fileExists('reports/dependency-check-report.json')) {
-                //         def jsonReport = readJSON file: 'reports/dependency-check-report.json'
-                //         def vulnerabilities = jsonReport.dependencies.collect { it.vulnerabilities ?: [] }.flatten()
-                //         def highVulnerabilities = vulnerabilities.findAll { it.cvssv3?.baseScore >= 7 }
-                //         echo "OWASP Dependency-Check found ${vulnerabilities.size()} vulnerabilities, ${highVulnerabilities.size()} of which are high severity (CVSS >= 7.0)"
-                //     } else {
-                //         echo "Dependency-Check JSON report not found. The scan may have failed."
-                //     }
-                // }
+                script {
+                    if (fileExists('dependency-check-report.json')) {
+                        def jsonReport = readJSON file: 'dependency-check-report.json'
+                        def vulnerabilities = jsonReport.dependencies.collect { it.vulnerabilities ?: [] }.flatten()
+                        def highVulnerabilities = vulnerabilities.findAll { it.cvssv3?.baseScore >= 7 }
+                        echo "OWASP Dependency-Check found ${vulnerabilities.size()} vulnerabilities, ${highVulnerabilities.size()} of which are high severity (CVSS >= 7.0)"
+                    } else {
+                        echo "Dependency-Check JSON report not found. The scan may have failed."
+                    }
+                }
             }
             // Archive the report as an artifact
             post {
