@@ -81,5 +81,49 @@ pipeline{
                 }
             }
         }
+        stage('SAST with Bandit'){
+            steps {
+                script {
+                    // Run scan with Bandit and generate report
+                    sh '''
+                        python3 -m venv bandit_venv
+                        . bandit_venv/bin/activate
+                        pip install --upgrade pip
+                        pip install bandit
+
+                        bandit -r . -f json -o bandit-report.json --exit-zero
+                        bandit -r . -f html -o bandit-report.html --exit-zero
+                        deactivate
+                    '''
+                }
+                // Parse JSON report to check for issues
+                script {
+                    def jsonReport = readJSON file: 'bandit-report.json'
+                    def issueCount = jsonReport.results.size()
+                    if (issueCount > 0) {
+                        echo 'Bandit found ${issueCount} potential security issue(s). Please review the report'
+                    } else {
+                        echo 'Bandit scan completely with no found issue.'
+                    }
+                }
+            }
+            post {
+                always {
+                    archiveArtifacts artifacts: 'bandit-report.json, bandit-report.html',
+                    fingerprint: true,
+                    allowEmptyArchive: true
+
+                    // Publish HTML Report
+                    publishHTML(target: [
+                        allowMissing: false,
+                        alwaysLinkToLastBuild: false,
+                        keepAll: true,
+                        reportDir: '.',
+                        reportFiles: 'bandit-report.html',
+                        reportName: 'Bandit Static Analysis Report'
+                    ])
+                }
+            }
+        }
     }
 }
