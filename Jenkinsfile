@@ -137,19 +137,9 @@ pipeline{
                         pip install flake8
 
                         flake8 --output-file=flake8-report.json --count --show-source --statistics . --exit-zero
-                        flake8 --output-file=flake8-report.html --format=html --max-line-length=120 . --exit-zero
+                        flake8 --output-file=flake8-report.html --format=html --count --show-source --statistics --max-line-length=120 . --exit-zero
                         deactivate
                     '''
-                }
-                // Parse report to check for issues
-                script {
-                    def jsonReport = readJSON file: 'flake8-report.json'
-                    def issueCount = jsonReport('flake8-report.json').results.size()
-                    if (issueCount > 0) {
-                        echo "Flake8 found ${issueCount} potential security issue(s). Please review the report"
-                    } else {
-                        echo 'Flake8 scan completely with no found issue.'
-                    }
                 }
             }
             post {
