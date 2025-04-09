@@ -3,9 +3,10 @@ pipeline{
     agent {
         label 'jenkins-slave'
     }
-    // environment {
-
-    // }
+    environment {
+        DOCKER_REGISTRY = "https://index.docker.io",
+        DOCKER_IMAGE = "adekhemie/django-app"
+    }
   
     stages{
         
@@ -122,6 +123,74 @@ pipeline{
                         reportFiles: 'bandit-report.html',
                         reportName: 'Bandit Static Analysis Report'
                     ])
+                }
+            }
+        }
+        stage('SAST with Flake8'){
+            steps {
+                script {
+                    // Run scan with Flake8 and generate report
+                    sh '''
+                        python3 -m venv flake8_venv
+                        . flake8_venv/bin/activate
+                        pip install --upgrade pip
+                        pip install flake8
+
+                        flake8 --output-file=flake8-report.txt --format=pylint .
+                        deactivate
+                    '''
+                }
+                // Parse report to check for issues
+                script {
+                    def issueCount = readFile('flake8-report.txt').readLines().size()
+                    if (issueCount > 0) {
+                        echo "Flake8 found ${issueCount} potential security issue(s). Please review the report"
+                    } else {
+                        echo 'Flake8 scan completely with no found issue.'
+                    }
+                }
+            }
+            post {
+                always {
+                    archiveArtifacts artifacts: 'flake8-report.txt',
+                    fingerprint: true,
+                    allowEmptyArchive: true
+
+                    // Publish HTML Report
+                    publishHTML(target: [
+                        allowMissing: false,
+                        alwaysLinkToLastBuild: false,
+                        keepAll: true,
+                        reportDir: '.',
+                        reportFiles: 'flake8-report.txt',
+                        reportName: 'Flake8 Static Dependency Analysis Report'
+                    ])
+                }
+            }
+        }
+        stage('Buid and Push Docker Image To DockerHub'){
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'DOCKER_CREDENTIAL',
+                                        usernameVariable: 'DOCKER_USERNAME',
+                                        passwordVariable: 'DOCKER_PASSWORD',
+                                    )]) {
+                        // Build the docker image
+                        sh 'docker build -t ${DOCKER_IMAGE} .'
+
+                        // Login to Docker Hub
+                        sh '''
+                            set +x
+                            echo "$DOCKER_PASSWORD" | docker login $DOCKER_REGISTRY -u "DOCKER_USERNAME" --password-stdin
+                            set -x
+                        '''
+
+                        // Push Image to Docker Hub
+                        sh 'docker push ${DOCKER_IMAGE}'
+
+                        // Clean up by removing leftover credentials
+                        sh 'rm -f /home/jenkins/.docker/config.json'
+                    }
                 }
             }
         }
