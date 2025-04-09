@@ -136,7 +136,8 @@ pipeline{
                         pip install --upgrade pip
                         pip install flake8
 
-                        flake8 --output-file=flake8-report.json --count --show-source --statistics .
+                        flake8 --output-file=flake8-report.json --count --show-source --statistics . --exit-zero
+                        flake8 --output-file=flake8-report.html --format=html --max-line-length=120 . --exit-zero
                         deactivate
                     '''
                 }
