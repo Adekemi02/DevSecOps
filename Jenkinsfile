@@ -4,7 +4,7 @@ pipeline{
         label 'jenkins-slave'
     }
     environment {
-        DOCKER_REGISTRY = "https://index.docker.io",
+        DOCKER_REGISTRY = "https://index.docker.io"
         DOCKER_IMAGE = "adekhemie/django-app"
     }
   
