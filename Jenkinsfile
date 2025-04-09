@@ -137,26 +137,15 @@ pipeline{
                         pip install flake8
 
                         flake8 --output-file=flake8-report.json --count --show-source --statistics . --exit-zero
-                        flake8 --output-file=flake8-report.html --format=html --count --show-source --statistics --max-line-length=120 . --exit-zero
                         deactivate
                     '''
                 }
             }
             post {
                 always {
-                    archiveArtifacts artifacts: 'flake8-report.json, flake8-report.html',
+                    archiveArtifacts artifacts: 'flake8-report.json',
                     fingerprint: true,
                     allowEmptyArchive: true
-
-                    // Publish HTML Report
-                    publishHTML(target: [
-                        allowMissing: false,
-                        alwaysLinkToLastBuild: false,
-                        keepAll: true,
-                        reportDir: '.',
-                        reportFiles: 'flake8-report.html',
-                        reportName: 'Flake8 Static Dependency Analysis Report'
-                    ])
                 }
             }
         }
