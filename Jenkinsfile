@@ -136,13 +136,14 @@ pipeline{
                         pip install --upgrade pip
                         pip install flake8
 
-                        flake8 --output-file=flake8-report.txt --format=pylint .
+                        flake8 --output-file=flake8-report.json --count --show-source --statistics .
                         deactivate
                     '''
                 }
                 // Parse report to check for issues
                 script {
-                    def issueCount = readFile('flake8-report.txt').readLines().size()
+                    def jsonReport = readJSON file: 'flake8-report.json'
+                    def issueCount = jsonReport('flake8-report.json').results.size()
                     if (issueCount > 0) {
                         echo "Flake8 found ${issueCount} potential security issue(s). Please review the report"
                     } else {
@@ -152,7 +153,7 @@ pipeline{
             }
             post {
                 always {
-                    archiveArtifacts artifacts: 'flake8-report.txt',
+                    archiveArtifacts artifacts: 'flake8-report.json, flake8-report.html',
                     fingerprint: true,
                     allowEmptyArchive: true
 
@@ -162,7 +163,7 @@ pipeline{
                         alwaysLinkToLastBuild: false,
                         keepAll: true,
                         reportDir: '.',
-                        reportFiles: 'flake8-report.txt',
+                        reportFiles: 'flake8-report.html',
                         reportName: 'Flake8 Static Dependency Analysis Report'
                     ])
                 }
