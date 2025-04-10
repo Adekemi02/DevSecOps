@@ -1,4 +1,4 @@
-FROM python:3.13-alpine
+FROM python:3.11-slim
 WORKDIR /taskManager
 
 # Copy the reuirements.txt file into the container
