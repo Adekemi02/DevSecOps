@@ -13,7 +13,7 @@ pipeline{
         stage('Testing'){
             steps {
                 script{
-                sh 'echo "Hello from Slave Node"'
+                    sh 'echo "Hello from Slave Node"'
                 }
             }
         }
